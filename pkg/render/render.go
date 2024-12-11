@@ -3,6 +3,7 @@ package render
 import (
 	"bytes"
 	"github.com/ravenlycans/udemy-golang-modern-webapps/pkg/config"
+	"github.com/ravenlycans/udemy-golang-modern-webapps/pkg/models"
 	"html/template"
 	"log"
 	"net/http"
@@ -16,8 +17,13 @@ func New(a *config.AppConfig) {
 	app = a
 }
 
+// AddDefaultData allows you to add any data that needs to be available on every page.
+func AddDefaultData(td *models.TemplateData) *models.TemplateData {
+	return td
+}
+
 // Template is a function that renders a template.
-func Template(w http.ResponseWriter, name string) {
+func Template(w http.ResponseWriter, name string, td *models.TemplateData) {
 	var err error
 	var tc map[string]*template.Template
 
@@ -38,7 +44,10 @@ func Template(w http.ResponseWriter, name string) {
 	}
 
 	buf := new(bytes.Buffer)
-	err = t.Execute(buf, nil)
+
+	td = AddDefaultData(td)
+
+	err = t.Execute(buf, td)
 	if err != nil {
 		log.Printf("render.Template: %s", err.Error())
 	}

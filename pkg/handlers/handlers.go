@@ -3,6 +3,7 @@ package handlers
 import (
 	"fmt"
 	"github.com/ravenlycans/udemy-golang-modern-webapps/pkg/config"
+	"github.com/ravenlycans/udemy-golang-modern-webapps/pkg/models"
 	"github.com/ravenlycans/udemy-golang-modern-webapps/pkg/render"
 	"net/http"
 	"strconv"
@@ -33,12 +34,14 @@ func New(r *Repository) {
 
 // Home is the http handler for the "/" route.
 func (m *Repository) Home(w http.ResponseWriter, r *http.Request) {
-	render.Template(w, "home.page.tmpl")
+	render.Template(w, "home.page.tmpl", &models.TemplateData{})
 }
 
 // About is the http handler for the "/about" route.
 func (m *Repository) About(w http.ResponseWriter, r *http.Request) {
-	render.Template(w, "about.page.tmpl")
+	stringMap := make(map[string]string)
+	stringMap["test"] = "Hello Again.."
+	render.Template(w, "about.page.tmpl", &models.TemplateData{StringMap: stringMap})
 }
 
 // FavIcon serves the favicon.ico in the server root.
