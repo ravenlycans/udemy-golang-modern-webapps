@@ -31,7 +31,7 @@ func main() {
 	// initialize the routes package
 	routes.New(repo)
 
-	// Register the middlewares used.
+	// TODO: Register the middlewares used.
 
 	// Register the routes available.
 	err = routes.RegisterRoute("/", handlers.Repo.Home, "GET")
