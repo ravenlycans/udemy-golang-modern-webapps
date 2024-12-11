@@ -73,7 +73,7 @@ func Run() *chi.Mux {
 
 	// Loop over the routes in the App.Routes config setting.
 	for name, info := range Repo.App.Routes {
-		// RegisterRoute the route.
+		// Register the route based on the method choosen.
 		switch info.Method {
 		case "GET":
 			r.Get(name, *info.RouteFunc)
