@@ -1,18 +1,19 @@
-package main
+package handlers
 
 import (
 	"fmt"
+	"github.com/ravenlycans/udemy-golang-modern-webapps/pkg/render"
 	"net/http"
 )
 
 // Home is the http handler for the "/" route.
 func Home(w http.ResponseWriter, r *http.Request) {
-	renderTemplate(w, "home.page.tmpl")
+	render.RenderTemplate(w, "home.page.tmpl")
 }
 
 // About is the http handler for the "/about" route.
 func About(w http.ResponseWriter, r *http.Request) {
-	renderTemplate(w, "about.page.tmpl")
+	render.RenderTemplate(w, "about.page.tmpl")
 }
 
 // FavIcon serves the favicon.ico in the server root.
