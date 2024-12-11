@@ -6,12 +6,17 @@ import (
 	"net/http"
 )
 
-type RouteHandler func(w http.ResponseWriter, r *http.Request)
+type RouteInfo struct {
+	Path      string
+	Method    string
+	RouteFunc *http.HandlerFunc
+}
 
 // AppConfig holds the application configuration.
 type AppConfig struct {
 	UseCache      bool
 	TemplateCache map[string]*template.Template
 	InfoLog       *log.Logger
-	Routes        map[string]RouteHandler
+	Routes        map[string]RouteInfo
+	Middlewares   []func(http.Handler) http.Handler
 }

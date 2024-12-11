@@ -31,18 +31,17 @@ func main() {
 	// initialize the routes package
 	routes.New(repo)
 
+	// Register the middlewares used.
+
 	// Register the routes available.
-	err = routes.Register("/", handlers.Repo.Home)
-	err = routes.Register("/about", handlers.Repo.About)
-	err = routes.Register("/favicon.ico", handlers.Repo.FavIcon)
+	err = routes.RegisterRoute("/", handlers.Repo.Home, "GET")
+	err = routes.RegisterRoute("/about", handlers.Repo.About, "GET")
+	err = routes.RegisterRoute("/favicon.ico", handlers.Repo.FavIcon, "GET")
 	if err != nil {
 		log.Fatalf("main: %s", err.Error())
 	}
 
-	// Run the routes, to register them in the server.
-	routes.Run()
-
 	fmt.Printf("Server is listening on port %d\n", portNumber)
 
-	_ = http.ListenAndServe(fmt.Sprintf(":%d", portNumber), nil)
+	_ = http.ListenAndServe(fmt.Sprintf(":%d", portNumber), routes.Run())
 }
