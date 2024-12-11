@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/go-chi/chi/v5/middleware"
 	"github.com/ravenlycans/udemy-golang-modern-webapps/pkg/config"
 	"github.com/ravenlycans/udemy-golang-modern-webapps/pkg/handlers"
 	"github.com/ravenlycans/udemy-golang-modern-webapps/pkg/render"
@@ -31,7 +32,8 @@ func main() {
 	// initialize the routes package
 	routes.New(repo)
 
-	// TODO: Register the middlewares used.
+	// Register the middlewares used.
+	routes.AddMiddleware(middleware.Recoverer)
 
 	// Register the routes available.
 	err = routes.RegisterRoute("/", handlers.Repo.Home, "GET")
