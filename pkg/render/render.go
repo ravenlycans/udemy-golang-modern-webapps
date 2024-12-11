@@ -2,42 +2,56 @@ package render
 
 import (
 	"bytes"
+	"github.com/ravenlycans/udemy-golang-modern-webapps/pkg/config"
 	"html/template"
 	"log"
 	"net/http"
 	"path/filepath"
 )
 
-// RenderTemplate is a function that renders a template.
-func RenderTemplate(w http.ResponseWriter, name string) {
-	// Get the template cache from the app config.
+var app *config.AppConfig
 
-	tc, err := CreateTemplateCache()
-	if err != nil {
-		log.Fatalf("RenderTemplate: %s", err.Error())
+// New sets the config for the template package.
+func New(a *config.AppConfig) {
+	app = a
+}
+
+// Template is a function that renders a template.
+func Template(w http.ResponseWriter, name string) {
+	var err error
+	var tc map[string]*template.Template
+
+	if app.UseCache {
+		// Get the template cache from the app config.
+		tc = app.TemplateCache
+	} else {
+		tc, err = CreateCache()
+		if err != nil {
+			log.Fatalf("render.Template: %s", err.Error())
+		}
 	}
 
 	// Get the requested template from cache.
 	t, ok := tc[name]
 	if !ok {
-		log.Fatalf("RenderTemplate: %s", err.Error())
+		log.Fatalf("render.Template: Could not find template %s in cache", name)
 	}
 
 	buf := new(bytes.Buffer)
 	err = t.Execute(buf, nil)
 	if err != nil {
-		log.Printf("RenderTemplate: %s", err.Error())
+		log.Printf("render.Template: %s", err.Error())
 	}
 
 	// Render the template.
 	_, err = buf.WriteTo(w)
 	if err != nil {
-		log.Printf("RenderTemplate: %s", err.Error())
+		log.Printf("render.Template: %s", err.Error())
 	}
 }
 
-// CreateTemplateCache is a function that runs through the ./templates folder, and creates a cache from it.
-func CreateTemplateCache() (map[string]*template.Template, error) {
+// CreateCache is a function that runs through the ./templates folder, and creates a cache from it.
+func CreateCache() (map[string]*template.Template, error) {
 	myCache := map[string]*template.Template{}
 
 	// get all the files named *.page.tmpl from the ./templates
