@@ -10,8 +10,9 @@ import (
 
 // RenderTemplate is a function that renders a template.
 func RenderTemplate(w http.ResponseWriter, name string) {
-	// Create a template cache
-	tc, err := createTemplateCache()
+	// Get the template cache from the app config.
+
+	tc, err := CreateTemplateCache()
 	if err != nil {
 		log.Fatalf("RenderTemplate: %s", err.Error())
 	}
@@ -35,8 +36,8 @@ func RenderTemplate(w http.ResponseWriter, name string) {
 	}
 }
 
-// createTemplateCache is a function that runs through the ./templates folder, and creates a cache from it.
-func createTemplateCache() (map[string]*template.Template, error) {
+// CreateTemplateCache is a function that runs through the ./templates folder, and creates a cache from it.
+func CreateTemplateCache() (map[string]*template.Template, error) {
 	myCache := map[string]*template.Template{}
 
 	// get all the files named *.page.tmpl from the ./templates
