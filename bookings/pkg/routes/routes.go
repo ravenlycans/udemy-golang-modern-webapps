@@ -3,8 +3,8 @@ package routes
 import (
 	"errors"
 	"github.com/go-chi/chi/v5"
-	"github.com/ravenlycans/udemy-golang-modern-webapps/pkg/config"
-	"github.com/ravenlycans/udemy-golang-modern-webapps/pkg/handlers"
+	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/pkg/config"
+	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/pkg/handlers"
 	"log"
 	"net/http"
 )

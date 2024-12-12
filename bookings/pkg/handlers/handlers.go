@@ -2,9 +2,9 @@ package handlers
 
 import (
 	"fmt"
-	"github.com/ravenlycans/udemy-golang-modern-webapps/pkg/config"
-	"github.com/ravenlycans/udemy-golang-modern-webapps/pkg/models"
-	"github.com/ravenlycans/udemy-golang-modern-webapps/pkg/render"
+	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/pkg/config"
+	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/pkg/models"
+	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/pkg/render"
 	"net/http"
 	"strconv"
 )

@@ -2,8 +2,8 @@ package render
 
 import (
 	"bytes"
-	"github.com/ravenlycans/udemy-golang-modern-webapps/pkg/config"
-	"github.com/ravenlycans/udemy-golang-modern-webapps/pkg/models"
+	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/pkg/config"
+	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/pkg/models"
 	"html/template"
 	"log"
 	"net/http"
