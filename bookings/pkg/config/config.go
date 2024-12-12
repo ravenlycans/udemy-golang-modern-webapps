@@ -14,6 +14,7 @@ import (
 type RouteInfo struct {
 	Path      string
 	Method    string
+	IsStatic  bool
 	RouteFunc *http.HandlerFunc
 }
 

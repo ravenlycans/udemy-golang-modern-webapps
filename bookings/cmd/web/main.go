@@ -52,6 +52,12 @@ func main() {
 	routes.AddMiddleware(NoSurf)
 	routes.AddMiddleware(SessionLoad)
 
+	// Add our static route.
+	err = routes.SetStaticDir("/static", "./static/")
+	if err != nil {
+		log.Fatalf("main: %s", err.Error())
+	}
+
 	// Register the routes available.
 	err = routes.RegisterRoute("/", handlers.Repo.Home, "GET")
 	err = routes.RegisterRoute("/about", handlers.Repo.About, "GET")

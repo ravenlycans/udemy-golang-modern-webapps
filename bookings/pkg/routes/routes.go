@@ -2,11 +2,13 @@ package routes
 
 import (
 	"errors"
+	"fmt"
 	"github.com/go-chi/chi/v5"
 	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/pkg/config"
 	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/pkg/handlers"
 	"log"
 	"net/http"
+	"strings"
 )
 
 var Repo *handlers.Repository
@@ -26,6 +28,31 @@ func AddMiddleware(m func(http.Handler) http.Handler) {
 // ClearMiddlewares lets you clear middlewares added.
 func ClearMiddlewares() {
 	Repo.App.Middlewares = []func(http.Handler) http.Handler{}
+}
+
+func SetStaticDir(url string, path string) error {
+	if len(url) <= 1 || len(path) <= 1 {
+		return errors.New("parameter 'url and/or path' cannot be empty")
+	}
+
+	if _, ok := Repo.App.Routes[url]; ok {
+		return errors.New("route already registered")
+	}
+
+	for _, r := range Repo.App.Routes {
+		if r.IsStatic && r.Path != path {
+			return errors.New("another static route is already registered")
+		}
+	}
+
+	Repo.App.Routes[url] = config.RouteInfo{
+		Path:      path,
+		IsStatic:  true,
+		Method:    "",
+		RouteFunc: nil,
+	}
+
+	return nil
 }
 
 // RegisterRoute registers a new route in the app config.
@@ -81,6 +108,13 @@ func Run() *chi.Mux {
 
 	// Loop over the routes in the App.Routes config setting.
 	for name, info := range Repo.App.Routes {
+		// Check if the route is a static route.
+		if info.IsStatic {
+			url := fmt.Sprintf("%s/{*path}", name)
+			r.Mount(strings.TrimSpace(url), http.StripPrefix(name, http.FileServer(http.Dir(info.Path))))
+			continue
+		}
+
 		// Register the route based on the method choosen.
 		switch info.Method {
 		case "GET":
