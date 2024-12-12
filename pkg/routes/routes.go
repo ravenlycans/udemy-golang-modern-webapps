@@ -18,6 +18,7 @@ func New(r *handlers.Repository) {
 	Repo.App.Middlewares = []func(http.Handler) http.Handler{}
 }
 
+// AddMiddleware lets you inject middleware into the router package
 func AddMiddleware(m func(http.Handler) http.Handler) {
 	Repo.App.Middlewares = append(Repo.App.Middlewares, m)
 }
@@ -52,6 +53,7 @@ func RegisterRoute(name string, f http.HandlerFunc, method string) error {
 	return nil
 }
 
+// UnregisterRoute allows you to remove a route from the router.
 func UnregisterRoute(name string) error {
 	if len(name) <= 1 {
 		return errors.New("invalid parameters sent to Unregister")
@@ -61,6 +63,7 @@ func UnregisterRoute(name string) error {
 	return nil
 }
 
+// Run allows you to "run" the router, it returns a chi.Mux pointer, for use in http.server handler field.
 func Run() *chi.Mux {
 	r := chi.NewRouter()
 
