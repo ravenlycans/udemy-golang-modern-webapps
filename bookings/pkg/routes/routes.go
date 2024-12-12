@@ -23,6 +23,11 @@ func AddMiddleware(m func(http.Handler) http.Handler) {
 	Repo.App.Middlewares = append(Repo.App.Middlewares, m)
 }
 
+// ClearMiddlewares lets you clear middlewares added.
+func ClearMiddlewares() {
+	Repo.App.Middlewares = []func(http.Handler) http.Handler{}
+}
+
 // RegisterRoute registers a new route in the app config.
 func RegisterRoute(name string, f http.HandlerFunc, method string) error {
 
