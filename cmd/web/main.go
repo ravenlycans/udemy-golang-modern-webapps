@@ -34,6 +34,7 @@ func main() {
 
 	// Register the middlewares used.
 	routes.AddMiddleware(middleware.Recoverer)
+	routes.AddMiddleware(NoSurf)
 
 	// Register the routes available.
 	err = routes.RegisterRoute("/", handlers.Repo.Home, "GET")
