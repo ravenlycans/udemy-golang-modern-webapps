@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/alexedwards/scs/v2"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/ravenlycans/udemy-golang-modern-webapps/pkg/config"
 	"github.com/ravenlycans/udemy-golang-modern-webapps/pkg/handlers"
@@ -9,13 +10,27 @@ import (
 	"github.com/ravenlycans/udemy-golang-modern-webapps/pkg/routes"
 	"log"
 	"net/http"
+	"time"
 )
 
 const portNumber = 8080
 
+var app config.AppConfig
+var session *scs.SessionManager
+
 // main is the application entrypoint
 func main() {
-	var app config.AppConfig
+
+	// TODO: Change this to true when in production.
+	app.InProduction = false
+
+	session = scs.New()
+	session.Lifetime = 24 * time.Hour
+	session.Cookie.Persist = true
+	session.Cookie.SameSite = http.SameSiteLaxMode
+	session.Cookie.Secure = app.InProduction
+
+	app.Session = session
 
 	tc, err := render.CreateCache()
 	if err != nil {
@@ -35,6 +50,7 @@ func main() {
 	// Register the middlewares used.
 	routes.AddMiddleware(middleware.Recoverer)
 	routes.AddMiddleware(NoSurf)
+	routes.AddMiddleware(SessionLoad)
 
 	// Register the routes available.
 	err = routes.RegisterRoute("/", handlers.Repo.Home, "GET")
