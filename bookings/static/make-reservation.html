@@ -57,8 +57,19 @@
 <div class="container">
     <div class="row mt-2">
         <div class="col">
-            <h1 class="text-center">This is the Make Reservation Page.</h1>
-            This will be the make reservation page.
+            <h1 class="text-center">Search for Availability</h1>
+            <form action="/static/make-reservation.html" method="GET">
+                <div class="input-group p-2">
+                    <span class="input-group-text">Starting Date</span>
+                    <input type="date" class="form-control" id="start_date" name="start_date" required>
+                    <span class="input-group-text bg-white border-0">&nbsp;</span>
+                    <span class="input-group-text">Ending Date</span>
+                    <input type="date" class="form-control" id="end_date" name="end_date" required>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
