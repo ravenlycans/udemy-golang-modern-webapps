@@ -62,6 +62,14 @@ func main() {
 	err = routes.RegisterRoute("/", handlers.Repo.Home, "GET")
 	err = routes.RegisterRoute("/about", handlers.Repo.About, "GET")
 	err = routes.RegisterRoute("/favicon.ico", handlers.Repo.FavIcon, "GET")
+	err = routes.RegisterRoute("/rooms/generals-quarters", handlers.Repo.RoomsGenerals, "GET")
+	err = routes.RegisterRoute("/rooms/majors-suite", handlers.Repo.RoomsMajors, "GET")
+	err = routes.RegisterRoute("/make-reservation", handlers.Repo.MakeReservation, "GET")
+	err = routes.RegisterRoute("/make-reservation-ep", handlers.Repo.MakeReservation, "POST")
+	err = routes.RegisterRoute("/search-availability", handlers.Repo.SearchAvailability, "GET")
+	err = routes.RegisterRoute("/search-availability-ep", handlers.Repo.SearchAvailability, "POST")
+	err = routes.RegisterRoute("/contact", handlers.Repo.Contact, "GET")
+
 	if err != nil {
 		log.Fatalf("main: %s", err.Error())
 	}

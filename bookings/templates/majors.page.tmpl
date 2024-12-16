@@ -1,0 +1,33 @@
+{{template "base" .}}
+
+{{define "content"}}
+    <div class="container">
+        <div class="row mt-2">
+            <div class="col-12">
+                <img src="/static/images/marjors-suite.png" class="img-fluid rounded mx-auto d-block room-image" alt="Major's Suite" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <h1 class="text-center mt-4">Major's Suite</h1>
+                <p>
+                    Some text here.
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col text-center">
+                <a id="check-availability-button" href="#!" class="btn btn-success">Check Availability</a>
+            </div>
+        </div>
+    </div>
+{{end}}
+{{define "js"}}
+    <script>
+        let attention = Prompt();
+        const elem1 = document.getElementById('check-availability-button')
+        elem1.addEventListener('click', () => {
+            attention.reservationDatesPicker({title: "Choose your dates"});
+        });
+    </script>
+{{end}}

@@ -1,0 +1,37 @@
+{{template "base" .}}
+
+{{define "content"}}
+    <div class="container">
+        <div class="row mt-2">
+            <div class="col-md-3"></div>
+            <div class="col-md-6">
+                <h1 class="text-center">Search for Availability</h1>
+                <form action="/search-availability-ep" method="POST" novalidate class="needs-validation">
+                    <div class="input-group p-2" id="search-availability-dates">
+                        <span class="input-group-text">Starting Date</span>
+                        <input type="text" class="form-control" id="start" name="start_date" placeholder="Arrival" required>
+                        <span class="input-group-text bg-white border-0">&nbsp;</span>
+                        <span class="input-group-text">Ending Date</span>
+                        <input type="text" class="form-control" id="end" name="end_date" placeholder="Departure" required>
+                    </div>
+                    <div class="form-text text-center mb-2" id="reservation-error">
+                        Please choose a starting and ending date.
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Search</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{{end}}
+
+{{define "js"}}
+    <script>
+        const elem = document.getElementById('search-availability-dates');
+        const rangepicker = new DateRangePicker(elem, {
+            buttonClass: 'btn',
+            format: 'yyyy-mm-dd',
+        });
+    </script>
+{{end}}

@@ -115,21 +115,26 @@ func Run() *chi.Mux {
 			continue
 		}
 
-		// Register the route based on the method choosen.
+		// Register the route based on the method chosen.
 		switch info.Method {
 		case "GET":
+			log.Printf("routes.Run: Adding route %s as GET\n", name)
 			r.Get(name, *info.RouteFunc)
 			break
 		case "POST":
+			log.Printf("routes.Run: Adding route %s as POST\n", name)
 			r.Post(name, *info.RouteFunc)
 			break
 		case "DELETE":
+			log.Printf("routes.Run: Adding route %s as DELETE\n", name)
 			r.Delete(name, *info.RouteFunc)
 			break
 		case "PUT":
+			log.Printf("routes.Run: Adding route %s as PUT\n", name)
 			r.Put(name, *info.RouteFunc)
 			break
 		case "PATCH":
+			log.Printf("routes.Run: Adding route %s as PATCH\n", name)
 			r.Patch(name, *info.RouteFunc)
 			break
 		default:

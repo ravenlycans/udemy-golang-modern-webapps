@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/pkg/config"
 	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/pkg/models"
@@ -56,4 +57,29 @@ func (m *Repository) FavIcon(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "favicon.ico")
 	cl, _ := strconv.Atoi(w.Header().Get("Content-Length"))
 	fmt.Printf("FavIcon: wrote %d bytes to %s\n", cl, r.RemoteAddr)
+}
+
+func (m *Repository) RoomsGenerals(w http.ResponseWriter, r *http.Request) {
+	render.Template(w, "generals.page.tmpl", &models.TemplateData{})
+}
+
+func (m *Repository) RoomsMajors(w http.ResponseWriter, r *http.Request) {
+	render.Template(w, "majors.page.tmpl", &models.TemplateData{})
+}
+
+func (m *Repository) MakeReservation(w http.ResponseWriter, r *http.Request) {
+	render.Template(w, "make-reservation.page.tmpl", &models.TemplateData{})
+}
+
+func (m *Repository) SearchAvailability(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "GET" {
+		render.Template(w, "search-availability.page.tmpl", &models.TemplateData{})
+	} else {
+		jsBytes, _ := json.Marshal(r.Form)
+		_, _ = w.Write(jsBytes)
+	}
+}
+
+func (m *Repository) Contact(w http.ResponseWriter, r *http.Request) {
+	render.Template(w, "contact.page.tmpl", &models.TemplateData{})
 }
