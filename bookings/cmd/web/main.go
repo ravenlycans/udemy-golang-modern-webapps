@@ -68,6 +68,7 @@ func main() {
 	err = routes.RegisterRoute("/make-reservation-ep", handlers.Repo.MakeReservation, "POST")
 	err = routes.RegisterRoute("/search-availability", handlers.Repo.SearchAvailability, "GET")
 	err = routes.RegisterRoute("/search-availability-ep", handlers.Repo.SearchAvailabilityEP, "POST")
+	err = routes.RegisterRoute("/search-availability-ep-json", handlers.Repo.SearchAvailabilityEPJSON, "GET")
 	err = routes.RegisterRoute("/contact", handlers.Repo.Contact, "GET")
 
 	if err != nil {

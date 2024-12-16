@@ -1,10 +1,12 @@
 package handlers
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/pkg/config"
 	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/pkg/models"
 	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/pkg/render"
+	"log"
 	"net/http"
 	"strconv"
 )
@@ -15,6 +17,12 @@ var Repo *Repository
 // Repository is the repository type
 type Repository struct {
 	App *config.AppConfig
+}
+
+// jsonReponse is the type for the response that the server will send back as json.
+type jsonResponse struct {
+	OK      bool   `json:"ok"`
+	Message string `json:"message"`
 }
 
 // Handler is a type for the signature of the handler functions.
@@ -78,12 +86,31 @@ func (m *Repository) SearchAvailability(w http.ResponseWriter, r *http.Request) 
 	render.Template(w, r, "search-availability.page.tmpl", &models.TemplateData{})
 }
 
-// SearchAvailabilityEP is the endpoint for the Book Now page and the search availability forms.
+// SearchAvailabilityEP is the endpoint for the Book Now page.
 func (m *Repository) SearchAvailabilityEP(w http.ResponseWriter, r *http.Request) {
 	sDate := r.FormValue("start_date")
 	eDate := r.FormValue("end_date")
 
 	_, _ = w.Write([]byte(fmt.Sprintf("Start Date: %s\nEnd Date: %s\n", sDate, eDate)))
+}
+
+// SearchAvailabilityEPJSON is an endpoint that allows the search available forms, to get data about availability back.
+func (m *Repository) SearchAvailabilityEPJSON(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	jr := jsonResponse{OK: true, Message: "All Okay!"}
+	out, err := json.MarshalIndent(jr, "", "    ")
+
+	if err != nil {
+		log.Printf("SearchAvailabilityEPJSON: %s", err.Error())
+		w.WriteHeader(http.StatusInternalServerError)
+		jr.OK = false
+		jr.Message = err.Error()
+	} else {
+		w.WriteHeader(http.StatusOK)
+	}
+
+	_, _ = w.Write(out)
 }
 
 // Contact displays the contact page.
