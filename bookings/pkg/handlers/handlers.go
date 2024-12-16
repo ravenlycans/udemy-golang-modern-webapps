@@ -19,12 +19,6 @@ type Repository struct {
 	App *config.AppConfig
 }
 
-// jsonReponse is the type for the response that the server will send back as json.
-type jsonResponse struct {
-	OK      bool   `json:"ok"`
-	Message string `json:"message"`
-}
-
 // Handler is a type for the signature of the handler functions.
 type Handler func(http.ResponseWriter, *http.Request)
 
@@ -92,6 +86,12 @@ func (m *Repository) SearchAvailabilityEP(w http.ResponseWriter, r *http.Request
 	eDate := r.FormValue("end_date")
 
 	_, _ = w.Write([]byte(fmt.Sprintf("Start Date: %s\nEnd Date: %s\n", sDate, eDate)))
+}
+
+// jsonResponse is the type for the response that the server will send back as json.
+type jsonResponse struct {
+	OK      bool   `json:"ok"`
+	Message string `json:"message"`
 }
 
 // SearchAvailabilityEPJSON is an endpoint that allows the search available forms, to get data about availability back.

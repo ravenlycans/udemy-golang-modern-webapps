@@ -27,7 +27,58 @@
         let attention = Prompt();
         const elem1 = document.getElementById('check-availability-button')
         elem1.addEventListener('click', () => {
-            attention.reservationDatesPicker({title: "Choose your dates"});
+            const html = `
+                    <form id="check-availability-form" action="" method="POST" novalidate class="needs-validation">
+                        <div class="form-row">
+                            <div class="col">
+                                <div class="input-group p-2" id="reservation-dates-modal">
+                                    <input type="text" class="form-control" id="start_date" name="start" placeholder="Arrival" value="" required />
+                                    <span class="input-group-text bg-white border-0">&nbsp;</span>
+                                    <input type="text" class="form-control" id="end_date" name="end" placeholder="Departure" value="" required />
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+            `;
+            attention.reservationDatesPicker({
+                body: html,
+                title: "Choose your dates",
+                willOpen: (popupDOM) => {
+                    const elem = document.getElementById("reservation-dates-modal");
+                    const rangepicker = new DateRangePicker(elem, {
+                        buttonClass: 'btn',
+                        format: 'yyyy-mm-dd',
+                        showOnFocus: true,
+                        orientation: 'top',
+                        container: 'body',
+                    });
+                },
+                preConfirm: (data) => {
+                    return [
+                        document.getElementById("start_date").value,
+                        document.getElementById("end_date").value,
+                    ]
+                },
+                callback: (result) => {
+                    const formData = new FormData();
+                    formData.append('csrf_token', "{{.CSRFToken}}");
+                    formData.append('start_date', result.start_date);
+                    formData.append('end_date', result.end_date);
+
+                    fetch('/search-availability-ep-json', {
+                        method: 'POST',
+                        body: formData,
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log(data);
+                            if (data.ok) {
+                                attention.success({title: "Room Available!!"});
+                            } else {
+                                attention.error({title: "Room Unavailable!!"});
+                            }
+                        })
+            }});
         });
     </script>
 {{end}}

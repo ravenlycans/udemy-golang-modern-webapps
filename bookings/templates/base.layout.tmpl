@@ -159,47 +159,50 @@
 
             async function reservationDatesPicker(c) {
                 const {
-                    title = ""
+                    body = "",
+                    title = "",
+                    callback = undefined,
+                    willOpen = undefined,
+                    preConfirm = undefined,
+                    didOpen = undefined,
                 } = c;
 
-                const { value: formValues } = await Swal.fire({
+                const { value: result } = await Swal.fire({
                     title: title,
-                    html: `
-                        <form id="check-availability-form" action="" method="POST" novalidate class="needs-validation">
-                            <div class="form-row">
-                                <div class="col">
-                                    <div class="input-group p-2" id="reservation-dates-modal">
-                                        <input type="text" class="form-control" id="start_date" name="start" placeholder="Arrival" value="" required>
-                                        <span class="input-group-text bg-white border-0">&nbsp;</span>
-                                        <input type="text" class="form-control" id="end_date" name="end" placeholder="Departure" value="" required>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    `,
+                    html: body,
                     backdrop: false,
                     focusConfirm: false,
                     showCancelButton: true,
-                    willOpen: () => {
-                        const elem = document.getElementById("reservation-dates-modal");
-                        const rangepicker = new DateRangePicker(elem, {
-                            buttonClass: 'btn',
-                            format: 'yyyy-mm-dd',
-                            showOnFocus: true,
-                            orientation: 'top',
-                            container: 'body',
-                        });
+                    willOpen: (popupDOM) => {
+                        if (c.willOpen !== undefined) {
+                            c.willOpen(popupDOM);
+                        }
                     },
-                    preConfirm: () => {
-                        return [
-                            document.getElementById("start_date").value,
-                            document.getElementById("end_date").value,
-                        ]
+                    preConfirm: (data) => {
+                      if (c.preConfirm !== undefined) {
+                          return c.preConfirm(data);
+                      }
                     },
+                    didOpen: (popupDOM) => {
+                        if (c.didOpen !== undefined) {
+                            c.didOpen(popupDOM);
+                        }
+                    }
                 });
 
-                if (formValues) {
-                    Swal.fire(JSON.stringify(formValues));
+                if (result) {
+                    // Make an AJAX call to the server and process returned JSON.
+                    if (result.dismiss !== Swal.DismissReason.cancel) {
+                       if (result.value !== "") {
+                           if (c.callback !== undefined) {
+                               c.callback(result);
+                           }
+                       } else {
+                           c.callback(false);
+                       }
+                    } else {
+                        c.callback(false);
+                    }
                 }
             }
 
