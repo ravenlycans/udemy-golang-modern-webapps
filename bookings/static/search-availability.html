@@ -20,8 +20,13 @@
         .room-image {
             max-width: 50%;
         }
+
         .notie-container {
             margin-top: 2em;
+        }
+
+        .datepicker {
+            z-index: 10000;
         }
     </style>
 </head>
@@ -133,7 +138,7 @@
 
         const elem2 = document.getElementById('my-button')
         elem2.addEventListener('click', () => {
-            attention.error({msg: "Oops!"});
+            attention.reservationDatesPicker({title: "Choose your dates"});
         });
 
         function notify(msg, msgType) {
@@ -207,10 +212,57 @@
                 });
             }
 
+            async function reservationDatesPicker(c) {
+                const {
+                    title = ""
+                } = c;
+
+                const { value: formValues } = await Swal.fire({
+                    title: title,
+                    html: `
+                        <form id="check-availability-form" action="" method="POST" novalidate class="needs-validation">
+                            <div class="form-row">
+                                <div class="col">
+                                    <div class="input-group p-2" id="reservation-dates-modal">
+                                        <input type="text" class="form-control" id="start_date" name="start" placeholder="Arrival" value="" required>
+                                        <span class="input-group-text bg-white border-0">&nbsp;</span>
+                                        <input type="text" class="form-control" id="end_date" name="end" placeholder="Departure" value="" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    `,
+                    backdrop: false,
+                    focusConfirm: false,
+                    showCancelButton: true,
+                    willOpen: () => {
+                        const elem = document.getElementById("reservation-dates-modal");
+                        const rangepicker = new DateRangePicker(elem, {
+                            buttonClass: 'btn',
+                            format: 'yyyy-mm-dd',
+                            showOnFocus: true,
+                            orientation: 'top',
+                            container: 'body',
+                        });
+                    },
+                    preConfirm: () => {
+                        return [
+                            document.getElementById("start_date").value,
+                            document.getElementById("end_date").value,
+                        ]
+                    },
+                });
+
+                if (formValues) {
+                    Swal.fire(JSON.stringify(formValues));
+                }
+            }
+
             return {
                 toast: toast,
                 success: success,
                 error: error,
+                reservationDatesPicker: reservationDatesPicker,
             }
         }
     </script>
