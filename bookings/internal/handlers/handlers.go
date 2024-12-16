@@ -80,7 +80,33 @@ func (m *Repository) MakeReservation(w http.ResponseWriter, r *http.Request) {
 
 // MakeReservationEP handles the posting of a new reservation form, including server side form validation.
 func (m *Repository) MakeReservationEP(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+	if err != nil {
+		log.Printf("MakeReservationEP: %s", err.Error())
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
+	reservation := models.Reservation{
+		FirstName: r.FormValue("first_name"),
+		LastName:  r.FormValue("last_name"),
+		Email:     r.FormValue("email"),
+		Phone:     r.FormValue("phone"),
+	}
+
+	form := forms.New(r.PostForm)
+
+	form.Has("first_name", r)
+
+	if !form.Valid() {
+		data := make(map[string]interface{})
+		data["reservation"] = reservation
+		render.Template(w, r, "make-reservation.page.tmpl", &models.TemplateData{
+			Form: form,
+			Data: data,
+		})
+		return
+	}
 }
 
 // SearchAvailability displays the Book Now page
