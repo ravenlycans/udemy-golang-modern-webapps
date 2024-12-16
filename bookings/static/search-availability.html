@@ -6,6 +6,7 @@
     <title>Landing Page</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.3.4/dist/css/datepicker-bs5.min.css">
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/notie/dist/notie.min.css">
     <style>
         .my-footer {
             height: 5em;
@@ -18,6 +19,9 @@
 
         .room-image {
             max-width: 50%;
+        }
+        .notie-container {
+            margin-top: 2em;
         }
     </style>
 </head>
@@ -77,6 +81,11 @@
                 </form>
             </div>
         </div>
+        <div class="row">
+            <div class="col">
+                <a id="my-button" href="#" class="btn btn-secondary">Click Me</a>
+            </div>
+        </div>
     </div>
     <div class="row my-footer">
         <div class="col text-center">
@@ -92,6 +101,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.3.4/dist/js/datepicker-full.min.js"></script>
+    <script src="https://unpkg.com/notie"></script>
     <script>
         (() => {
             'use strict'
@@ -117,6 +127,18 @@
             buttonClass: 'btn',
             format: 'yyyy-mm-dd',
         });
+
+        const elem2 = document.getElementById('my-button')
+        elem2.addEventListener('click', () => {
+            notify('This is my message', 'success');
+        });
+
+        function notify(msg, msgType) {
+            notie.alert({
+                type: msgType,
+                text: msg,
+            });
+        }
     </script>
 </body>
 </html>
