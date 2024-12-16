@@ -3,9 +3,9 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/pkg/config"
-	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/pkg/models"
-	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/pkg/render"
+	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/internal/config"
+	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/internal/models"
+	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/internal/render"
 	"log"
 	"net/http"
 	"strconv"

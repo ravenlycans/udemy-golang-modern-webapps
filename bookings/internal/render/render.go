@@ -3,8 +3,8 @@ package render
 import (
 	"bytes"
 	"github.com/justinas/nosurf"
-	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/pkg/config"
-	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/pkg/models"
+	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/internal/config"
+	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/internal/models"
 	"html/template"
 	"log"
 	"net/http"
