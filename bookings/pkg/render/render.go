@@ -2,6 +2,7 @@ package render
 
 import (
 	"bytes"
+	"github.com/justinas/nosurf"
 	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/pkg/config"
 	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/pkg/models"
 	"html/template"
@@ -18,12 +19,13 @@ func New(a *config.AppConfig) {
 }
 
 // AddDefaultData allows you to add any data that needs to be available on every page.
-func AddDefaultData(td *models.TemplateData) *models.TemplateData {
+func AddDefaultData(td *models.TemplateData, r *http.Request) *models.TemplateData {
+	td.CSRFToken = nosurf.Token(r)
 	return td
 }
 
 // Template is a function that renders a template.
-func Template(w http.ResponseWriter, name string, td *models.TemplateData) {
+func Template(w http.ResponseWriter, r *http.Request, name string, td *models.TemplateData) {
 	var err error
 	var tc map[string]*template.Template
 
@@ -45,7 +47,7 @@ func Template(w http.ResponseWriter, name string, td *models.TemplateData) {
 
 	buf := new(bytes.Buffer)
 
-	td = AddDefaultData(td)
+	td = AddDefaultData(td, r)
 
 	err = t.Execute(buf, td)
 	if err != nil {
