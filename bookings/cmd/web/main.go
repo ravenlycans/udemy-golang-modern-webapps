@@ -1,11 +1,13 @@
 package main
 
 import (
+	"encoding/gob"
 	"fmt"
 	"github.com/alexedwards/scs/v2"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/internal/config"
 	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/internal/handlers"
+	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/internal/models"
 	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/internal/render"
 	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/internal/routes"
 	"log"
@@ -20,6 +22,9 @@ var session *scs.SessionManager
 
 // main is the application entrypoint
 func main() {
+
+	// Register the complex types we want to store in the sessions.
+	gob.Register(models.Reservation{})
 
 	// TODO: Change this to true when in production.
 	app.InProduction = false
@@ -66,6 +71,7 @@ func main() {
 	err = routes.RegisterRoute("/rooms/majors-suite", handlers.Repo.RoomsMajors, "GET")
 	err = routes.RegisterRoute("/make-reservation", handlers.Repo.MakeReservation, "GET")
 	err = routes.RegisterRoute("/make-reservation-ep", handlers.Repo.MakeReservationEP, "POST")
+	err = routes.RegisterRoute("/reservation-summary", handlers.Repo.ReservationSummary, "GET")
 	err = routes.RegisterRoute("/search-availability", handlers.Repo.SearchAvailability, "GET")
 	err = routes.RegisterRoute("/search-availability-ep", handlers.Repo.SearchAvailabilityEP, "POST")
 	err = routes.RegisterRoute("/search-availability-ep-json", handlers.Repo.SearchAvailabilityEPJSON, "POST")

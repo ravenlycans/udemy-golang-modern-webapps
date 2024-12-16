@@ -6,7 +6,7 @@
             <div class="col">
                 <h1>Make a Reservation</h1>
                 {{$res := index .Data "reservation"}}
-                <form method="POST" action="/make-reservation-ep" class="" novalidate>
+                <form id="make-reservation-form" method="POST" action="/make-reservation-ep" class="" novalidate>
                     <input type="hidden" name="csrf_token" value="{{.CSRFToken}}" />
                     <div class="form-group mt-5">
                         <label for="first_name">First Name:</label>
@@ -56,4 +56,8 @@
             </div>
         </div>
     </div>
+{{end}}
+{{define "js"}}
+    <script>
+    </script>
 {{end}}

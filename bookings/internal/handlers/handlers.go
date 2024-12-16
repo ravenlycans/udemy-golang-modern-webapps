@@ -103,6 +103,7 @@ func (m *Repository) MakeReservationEP(w http.ResponseWriter, r *http.Request) {
 
 	form.Required("first_name", "last_name", "email")
 	form.MinLength("first_name", 3, r)
+	form.IsEmail("email")
 
 	if !form.Valid() {
 		data := make(map[string]interface{})
@@ -113,6 +114,10 @@ func (m *Repository) MakeReservationEP(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
+
+	// Have a valid form.
+	m.App.Session.Put(r.Context(), "reservation", reservation)
+	http.Redirect(w, r, "/reservation-summary", http.StatusSeeOther)
 }
 
 // SearchAvailability displays the Book Now page
@@ -156,4 +161,22 @@ func (m *Repository) SearchAvailabilityEPJSON(w http.ResponseWriter, r *http.Req
 // Contact displays the contact page.
 func (m *Repository) Contact(w http.ResponseWriter, r *http.Request) {
 	render.Template(w, r, "contact.page.tmpl", &models.TemplateData{})
+}
+
+// ReservationSummary displays the Reservation Summary page.
+func (m *Repository) ReservationSummary(w http.ResponseWriter, r *http.Request) {
+	reservation, ok := m.App.Session.Get(r.Context(), "reservation").(models.Reservation)
+
+	if !ok {
+		log.Println("Could not get reservation from session")
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+		return
+	}
+
+	data := make(map[string]interface{})
+	data["reservation"] = reservation
+
+	render.Template(w, r, "reservation-summary.page.tmpl", &models.TemplateData{
+		Data: data,
+	})
 }
