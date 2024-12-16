@@ -65,7 +65,7 @@ func main() {
 	err = routes.RegisterRoute("/rooms/generals-quarters", handlers.Repo.RoomsGenerals, "GET")
 	err = routes.RegisterRoute("/rooms/majors-suite", handlers.Repo.RoomsMajors, "GET")
 	err = routes.RegisterRoute("/make-reservation", handlers.Repo.MakeReservation, "GET")
-	err = routes.RegisterRoute("/make-reservation-ep", handlers.Repo.MakeReservation, "POST")
+	err = routes.RegisterRoute("/make-reservation-ep", handlers.Repo.MakeReservationEP, "POST")
 	err = routes.RegisterRoute("/search-availability", handlers.Repo.SearchAvailability, "GET")
 	err = routes.RegisterRoute("/search-availability-ep", handlers.Repo.SearchAvailabilityEP, "POST")
 	err = routes.RegisterRoute("/search-availability-ep-json", handlers.Repo.SearchAvailabilityEPJSON, "POST")

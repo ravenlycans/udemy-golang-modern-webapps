@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/internal/config"
+	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/internal/forms"
 	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/internal/models"
 	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/internal/render"
 	"log"
@@ -72,7 +73,14 @@ func (m *Repository) RoomsMajors(w http.ResponseWriter, r *http.Request) {
 
 // MakeReservation displays the Make a reservation page.
 func (m *Repository) MakeReservation(w http.ResponseWriter, r *http.Request) {
-	render.Template(w, r, "make-reservation.page.tmpl", &models.TemplateData{})
+	render.Template(w, r, "make-reservation.page.tmpl", &models.TemplateData{
+		Form: forms.New(nil),
+	})
+}
+
+// MakeReservationEP handles the posting of a new reservation form, including server side form validation.
+func (m *Repository) MakeReservationEP(w http.ResponseWriter, r *http.Request) {
+
 }
 
 // SearchAvailability displays the Book Now page

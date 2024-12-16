@@ -1,5 +1,7 @@
 package models
 
+import "github.com/ravenlycans/udemy-golang-modern-webapps/bookings/internal/forms"
+
 // TemplateData is the type for passing data from handlers into templates.
 type TemplateData struct {
 	StringMap  map[string]string
@@ -10,4 +12,5 @@ type TemplateData struct {
 	FlashMsg   string
 	WarningMsg string
 	ErrorMsg   string
+	Form       *forms.Form
 }
