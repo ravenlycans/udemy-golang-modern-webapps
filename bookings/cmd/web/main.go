@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bufio"
 	"encoding/gob"
+	"errors"
 	"fmt"
 	"github.com/alexedwards/scs/v2"
 	"github.com/go-chi/chi/v5/middleware"
@@ -14,6 +16,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
+	"sync"
 	"time"
 )
 
@@ -23,6 +27,22 @@ var app config.AppConfig
 var session *scs.SessionManager
 var infoLog *log.Logger
 var errorLog *log.Logger
+
+func startHttpServer(wg *sync.WaitGroup) *http.Server {
+	srv := &http.Server{Addr: fmt.Sprintf(":%d", portNumber), Handler: routes.Run()}
+
+	go func() {
+		defer wg.Done()
+		err := srv.ListenAndServe()
+
+		if err != nil && !errors.Is(err, http.ErrServerClosed) {
+			app.ErrorLog.Fatalf("startHttpServer: %s\n", err.Error())
+		}
+	}()
+
+	// Returning reference so caller can call Shutdown()
+	return srv
+}
 
 // main is the application entrypoint
 func main() {
@@ -91,10 +111,31 @@ func main() {
 	err = routes.RegisterRoute("/contact", handlers.Repo.Contact, "GET")
 
 	if err != nil {
-		log.Fatalf("main: %s", err.Error())
+		app.ErrorLog.Printf("main: %s", err.Error())
+		os.Exit(1)
 	}
 
-	fmt.Printf("Server is listening on port %d\n", portNumber)
+	app.InfoLog.Printf("Server is listening on port %d\n", portNumber)
 
-	_ = http.ListenAndServe(fmt.Sprintf(":%d", portNumber), routes.Run())
+	bNotQuitting := true
+	httpServerExitDone := &sync.WaitGroup{}
+	httpServerExitDone.Add(1)
+	srv := startHttpServer(httpServerExitDone)
+
+	// bNotQuitting is always true here, but will be set to false in the loop.
+	for bNotQuitting {
+		reader := bufio.NewReader(os.Stdin)
+		fmt.Print("Press Q to quit\n")
+		text, _ := reader.ReadString('\n')
+		text = strings.TrimSpace(text)
+		if text == "Q" || text == "q" {
+			app.InfoLog.Printf("Quitting server, bye bye!!\n")
+			bNotQuitting = false
+			_ = srv.Shutdown(nil)
+			httpServerExitDone.Wait()
+			break
+		}
+
+		time.Sleep(1 * time.Second)
+	}
 }
