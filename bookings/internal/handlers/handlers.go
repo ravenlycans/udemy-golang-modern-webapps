@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/internal/config"
 	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/internal/forms"
+	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/internal/helpers"
 	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/internal/models"
 	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/internal/render"
-	"log"
 	"net/http"
 	"strconv"
 )
@@ -37,20 +37,12 @@ func New(r *Repository) {
 
 // Home is the http handler for the "/" route.
 func (m *Repository) Home(w http.ResponseWriter, r *http.Request) {
-	remoteIP := r.RemoteAddr
-	m.App.Session.Put(r.Context(), "remote_ip", remoteIP)
-
 	render.Template(w, r, "home.page.tmpl", &models.TemplateData{})
 }
 
 // About is the http handler for the "/about" route.
 func (m *Repository) About(w http.ResponseWriter, r *http.Request) {
-	stringMap := make(map[string]string)
-	stringMap["test"] = "Hello Again.."
-
-	remoteIP := m.App.Session.GetString(r.Context(), "remote_ip")
-	stringMap["remote_ip"] = remoteIP
-	render.Template(w, r, "about.page.tmpl", &models.TemplateData{StringMap: stringMap})
+	render.Template(w, r, "about.page.tmpl", &models.TemplateData{})
 }
 
 // FavIcon serves the favicon.ico in the server root.
@@ -58,7 +50,8 @@ func (m *Repository) FavIcon(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "image/x-icon")
 	http.ServeFile(w, r, "favicon.ico")
 	cl, _ := strconv.Atoi(w.Header().Get("Content-Length"))
-	fmt.Printf("FavIcon: wrote %d bytes to %s\n", cl, r.RemoteAddr)
+
+	m.App.InfoLog.Printf("FavIcon: wrote %d bytes to %s\n", cl, r.RemoteAddr)
 }
 
 // RoomsGenerals displays the General's room page.
@@ -87,8 +80,7 @@ func (m *Repository) MakeReservation(w http.ResponseWriter, r *http.Request) {
 func (m *Repository) MakeReservationEP(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
-		log.Printf("MakeReservationEP: %s", err.Error())
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		helpers.ServerError(w, err)
 		return
 	}
 
@@ -147,10 +139,9 @@ func (m *Repository) SearchAvailabilityEPJSON(w http.ResponseWriter, r *http.Req
 	out, err := json.MarshalIndent(jr, "", "    ")
 
 	if err != nil {
-		log.Printf("SearchAvailabilityEPJSON: %s", err.Error())
-		w.WriteHeader(http.StatusInternalServerError)
+		helpers.ServerError(w, err)
 		jr.OK = false
-		jr.Message = err.Error()
+		jr.Message = "Internal Server Error"
 	} else {
 		w.WriteHeader(http.StatusOK)
 	}
@@ -168,7 +159,7 @@ func (m *Repository) ReservationSummary(w http.ResponseWriter, r *http.Request) 
 	reservation, ok := m.App.Session.Get(r.Context(), "reservation").(models.Reservation)
 
 	if !ok {
-		log.Println("Could not get reservation from session")
+		m.App.ErrorLog.Println("Could not get reservation from session")
 		m.App.Session.Put(r.Context(), "error-msg", "Can't get reservation from session")
 		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
