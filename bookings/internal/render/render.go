@@ -20,6 +20,9 @@ func New(a *config.AppConfig) {
 
 // AddDefaultData allows you to add any data that needs to be available on every page.
 func AddDefaultData(td *models.TemplateData, r *http.Request) *models.TemplateData {
+	td.FlashMsg = app.Session.PopString(r.Context(), "flash-msg")
+	td.WarningMsg = app.Session.PopString(r.Context(), "warning-msg")
+	td.ErrorMsg = app.Session.PopString(r.Context(), "error-msg")
 	td.CSRFToken = nosurf.Token(r)
 	return td
 }
