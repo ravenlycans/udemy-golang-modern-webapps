@@ -27,3 +27,6 @@ go.work.sum
 
 # Removing .idea from the repo
 .idea
+
+# Removing database.yml from the repo
+database.yml
