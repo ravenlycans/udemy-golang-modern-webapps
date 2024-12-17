@@ -7,11 +7,13 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/internal/config"
 	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/internal/handlers"
+	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/internal/helpers"
 	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/internal/models"
 	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/internal/render"
 	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/internal/routes"
 	"log"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -19,6 +21,8 @@ const portNumber = 8080
 
 var app config.AppConfig
 var session *scs.SessionManager
+var infoLog *log.Logger
+var errorLog *log.Logger
 
 // main is the application entrypoint
 func main() {
@@ -28,6 +32,12 @@ func main() {
 
 	// TODO: Change this to true when in production.
 	app.InProduction = false
+
+	infoLog = log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+	app.InfoLog = infoLog
+
+	errorLog = log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+	app.ErrorLog = errorLog
 
 	session = scs.New()
 	session.Lifetime = 24 * time.Hour
@@ -51,6 +61,9 @@ func main() {
 
 	// initialize the routes package
 	routes.New(repo)
+
+	// initialize the helpers package.
+	helpers.New(&app)
 
 	// Register the middlewares used.
 	routes.AddMiddleware(middleware.Recoverer)
