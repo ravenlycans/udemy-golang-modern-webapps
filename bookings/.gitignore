@@ -30,3 +30,6 @@ go.work.sum
 
 # Removing database.yml from the repo
 database.yml
+
+# Removing schema.sql from repos
+migrations/schema.sql
