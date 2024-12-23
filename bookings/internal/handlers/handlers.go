@@ -4,10 +4,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/internal/config"
+	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/internal/driver"
 	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/internal/forms"
 	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/internal/helpers"
 	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/internal/models"
 	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/internal/render"
+	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/internal/repository"
+	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/internal/repository/dbrepo"
 	"net/http"
 	"strconv"
 )
@@ -18,15 +21,17 @@ var Repo *Repository
 // Repository is the repository type
 type Repository struct {
 	App *config.AppConfig
+	DB  repository.DatabaseRepo
 }
 
 // Handler is a type for the signature of the handler functions.
 type Handler func(http.ResponseWriter, *http.Request)
 
 // NewRepo creates a new repository
-func NewRepo(a *config.AppConfig) *Repository {
+func NewRepo(a *config.AppConfig, db *driver.DB) *Repository {
 	return &Repository{
 		App: a,
+		DB:  dbrepo.NewPostgresRepo(db.SQL, a),
 	}
 }
 

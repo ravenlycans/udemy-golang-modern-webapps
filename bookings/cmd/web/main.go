@@ -7,7 +7,9 @@ import (
 	"fmt"
 	"github.com/alexedwards/scs/v2"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/joho/godotenv"
 	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/internal/config"
+	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/internal/driver"
 	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/internal/handlers"
 	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/internal/helpers"
 	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/internal/models"
@@ -46,6 +48,11 @@ func startHttpServer(wg *sync.WaitGroup) *http.Server {
 
 // main is the application entrypoint
 func main() {
+	// Lets load out .env file.
+	err := godotenv.Load(".env")
+	if err != nil {
+		log.Fatalf("Cannot load .env file, please make sure it is in the root directory.")
+	}
 
 	// Register the complex types we want to store in the sessions.
 	gob.Register(models.Reservation{})
@@ -58,6 +65,17 @@ func main() {
 
 	errorLog = log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 	app.ErrorLog = errorLog
+
+	// Let's connect to the db and construct the dsn string.
+	app.InfoLog.Printf("Connecting to database at %s:%s\n", os.Getenv("DB_SRV_URL"), os.Getenv("DB_SRV_PORT"))
+	dsn := fmt.Sprintf("postgres://%s:%s@%s:%v/%s", os.Getenv("DB_SRV_USER"), os.Getenv("DB_SRV_PASS"),
+		os.Getenv("DB_SRV_URL"), os.Getenv("DB_SRV_PORT"), os.Getenv("DB_NAME"))
+	db, err := driver.ConnectSQL(dsn)
+	if err != nil {
+		log.Fatalf("main: Cannot connect to database. Err: %s\n", err.Error())
+	}
+	defer db.SQL.Close()
+	app.InfoLog.Printf("Connected to database at %s:%s and pinged alive!!\n", os.Getenv("DB_SRV_URL"), os.Getenv("DB_SRV_PORT"))
 
 	session = scs.New()
 	session.Lifetime = 24 * time.Hour
@@ -76,7 +94,7 @@ func main() {
 	app.UseCache = false
 	render.New(&app)
 
-	repo := handlers.NewRepo(&app)
+	repo := handlers.NewRepo(&app, db)
 	handlers.New(repo)
 
 	// initialize the routes package

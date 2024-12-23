@@ -33,3 +33,6 @@ database.yml
 
 # Removing schema.sql from repos
 migrations/schema.sql
+
+# Removing the local package cache from repo
+pkg/
