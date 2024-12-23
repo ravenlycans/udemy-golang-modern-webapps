@@ -56,6 +56,10 @@ func main() {
 
 	// Register the complex types we want to store in the sessions.
 	gob.Register(models.Reservation{})
+	gob.Register(models.User{})
+	gob.Register(models.Room{})
+	gob.Register(models.Restriction{})
+	gob.Register(models.RoomRestriction{})
 
 	// TODO: Change this to true when in production.
 	app.InProduction = false
