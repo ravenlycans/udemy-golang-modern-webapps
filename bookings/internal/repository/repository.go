@@ -5,5 +5,6 @@ import "github.com/ravenlycans/udemy-golang-modern-webapps/bookings/internal/mod
 type DatabaseRepo interface {
 	AllUsers() bool
 
-	InsertReservation(res models.Reservation) error
+	InsertReservation(res models.Reservation) (int, error)
+	InsertRoomRestriction(r models.RoomRestriction) error
 }
