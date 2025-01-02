@@ -8,6 +8,7 @@
                 {{$res := index .Data "reservation"}}
                 <form id="make-reservation-form" method="POST" action="/make-reservation-ep" class="" novalidate>
                     <input type="hidden" name="csrf_token" value="{{.CSRFToken}}" />
+                    <input type="hidden" name="room_id" value="1" />
                     <div class="form-group mt-5">
                         <label for="first_name">First Name:</label>
                         {{with .Form.Errors.Get "first_name"}}
@@ -25,6 +26,26 @@
                         {{end}}
                         <input type="text" class="form-control {{with .Form.Errors.Get "last_name"}} is-invalid {{end}}"
                                id="last_name" name="last_name" placeholder="Last Name" autocomplete="off" value="{{$res.LastName}}"
+                               required
+                        >
+                    </div>
+                    <div class="form-group mt-2">
+                        <label for="start_date">Start Date:</label>
+                        {{with .Form.Errors.Get "start_date"}}
+                            <label class="text-danger">{{.}}</label>
+                        {{end}}
+                        <input type="text" class="form-control {{with .Form.Errors.Get "start_date"}} is-invalid {{end}}"
+                               id="start_date" name="start_date" placeholder="Start Date" autocomplete="off"
+                               required
+                        >
+                    </div>
+                    <div class="form-group mt-2">
+                        <label for="end_date">End Date:</label>
+                        {{with .Form.Errors.Get "end_date"}}
+                            <label class="text-danger">{{.}}</label>
+                        {{end}}
+                        <input type="text" class="form-control {{with .Form.Errors.Get "end_date"}} is-invalid {{end}}"
+                               id="end_date" name="end_date" placeholder="End Date" autocomplete="off"
                                required
                         >
                     </div>
@@ -57,4 +78,4 @@
         </div>
     </div>
 {{end}}
-
+}
