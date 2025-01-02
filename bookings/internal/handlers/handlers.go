@@ -13,6 +13,7 @@ import (
 	"github.com/ravenlycans/udemy-golang-modern-webapps/bookings/internal/repository/dbrepo"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 // Repo the repository used by the handlers.
@@ -88,12 +89,34 @@ func (m *Repository) MakeReservationEP(w http.ResponseWriter, r *http.Request) {
 		helpers.ServerError(w, err)
 		return
 	}
+	sd := r.Form.Get("start_date")
+	ed := r.Form.Get("end_date")
+
+	// 2020-01-01 -- 01/02 03:04:05PM '06 -0700
+	layout := "2006-01-02"
+	startDate, err := time.Parse(layout, sd)
+	if err != nil {
+		helpers.ServerError(w, err)
+	}
+
+	endDate, err := time.Parse(layout, ed)
+	if err != nil {
+		helpers.ServerError(w, err)
+	}
+
+	roomID, err := strconv.Atoi(r.Form.Get("room_id"))
+	if err != nil {
+		helpers.ServerError(w, err)
+	}
 
 	reservation := models.Reservation{
 		FirstName: r.FormValue("first_name"),
 		LastName:  r.FormValue("last_name"),
 		Email:     r.FormValue("email"),
 		Phone:     r.FormValue("phone"),
+		StartDate: startDate,
+		EndDate:   endDate,
+		RoomID:    roomID,
 	}
 
 	form := forms.New(r.PostForm)
@@ -110,6 +133,11 @@ func (m *Repository) MakeReservationEP(w http.ResponseWriter, r *http.Request) {
 			Data: data,
 		})
 		return
+	}
+
+	err = m.DB.InsertReservation(reservation)
+	if err != nil {
+		helpers.ServerError(w, err)
 	}
 
 	// Have a valid form.
